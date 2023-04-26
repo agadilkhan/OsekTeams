@@ -9,6 +9,6 @@ urlpatterns = [
 
     path('shop/books/', views.book_list),
     path('shop/books/<int:pk>/', views.book_detail),
-    path('shop/categories/', views.CategoryListAPIView),
-    path('shop/categories/<int:pk>', views.CategoryDetailAPIView),
+    path('shop/categories/', views.CategoryListAPIView.as_view()),
+    path('shop/categories/<int:pk>/', views.CategoryDetailAPIView.as_view()),
 ]
