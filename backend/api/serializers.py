@@ -9,6 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('first_name', 'last_name', 'username','email', 'password')
 
 class CategorySerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
     name = serializers.CharField()
 
     def create(self, validated_data):
