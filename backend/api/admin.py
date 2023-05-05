@@ -8,7 +8,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'price')
+    list_display = ('id', 'name', 'price', 'image')
 
 @admin.register(OrderBook)
 class OrderBookAdmin(admin.ModelAdmin):
@@ -31,3 +31,7 @@ class AddresBookAdmin(admin.ModelAdmin):
 @admin.register(OrderHistory)
 class OrderHistoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'order', 'status')
+
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('id', 'first_name', 'last_name', 'email', 'phone_number')

@@ -28,9 +28,17 @@ class CategorySerializer(serializers.Serializer):
         return instance
 
 class BookSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, book):
+        request = self.context.get('request')
+        host = request.build_absolute_uri('/')[:-1] if request else ''
+        image_url = book.image.url if book.image else ''
+        return f"{host}{image_url}"
+
     class Meta:
         model = Book
-        fields = ('id', 'category', 'name', 'author', 'description', 'price')
+        fields = '__all__'
 
 class OrderBookSerializer(serializers.ModelSerializer):
     book = BookSerializer()
@@ -54,10 +62,18 @@ class AddressSerializer(serializers.Serializer):
     city = serializers.CharField()
     street = serializers.CharField()
     postcode = serializers.CharField()
-    
-    def update(self, instance, validated_data):
-        instance.city = validated_data.get('city', instance.city)
-        instance.street = validated_data.get('street', instance.street)
-        instance.postode = validated_data.get('postcode', instance.postcode)
+
+class UserProfileSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    email = serializers.CharField(required=False)
+    phone_number = serializers.CharField(required=False)
+
+    def update(self, request, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
         instance.save()
         return instance
