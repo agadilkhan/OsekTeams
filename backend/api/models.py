@@ -1,4 +1,11 @@
 from django.db import models
+from django.contrib.auth.models import User
+
+ORDER_STATUS_CHOICES = [
+    ('OR', 'Ordered'),
+    ('DE', 'Delivered'),
+    ('CA', 'Canceled'),
+]
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
@@ -6,15 +13,68 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
+    
+    def __str__(self):
+        return self.name
 
 class Book(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, )
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='books')
     name = models.CharField(max_length=50)
     author = models.CharField(max_length=50)
     description = models.TextField()
     price = models.FloatField()
-    count = models.IntegerField()
+    image = models.ImageField(upload_to='books')
 
     class Meta:
         verbose_name = 'Book'
         verbose_name_plural = 'Books'
+
+    def __str__(self):
+        return self.name
+    
+class Address(models.Model):
+    city = models.CharField(max_length=50)
+    street = models.CharField(max_length=50)
+    postcode = models.CharField(max_length=50)
+
+    class Meta:
+        verbose_name = 'Address'
+        verbose_name_plural = 'Addresses'
+    
+    def __str__(self):
+        return f'{self.city} {self.street} {self.postcode}'
+    
+class AddressBook(models.Model):
+    addresses = models.ManyToManyField(Address)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        verbose_name = 'User_address'
+        verbose_name_plural = 'User addresses'
+
+    
+class OrderBook(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+    class Meta:
+        verbose_name = 'Order_book'
+        verbose_name_plural = 'Order books'
+
+class Order(models.Model):
+    books = models.ManyToManyField(OrderBook)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    ordered = models.BooleanField(default=False)
+    destination_address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Order'
+        verbose_name_plural = 'Orders'
+
+class OrderHistory(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='histories')
+    status = models.CharField(max_length=10, choices=ORDER_STATUS_CHOICES)
+
+    class Meta:
+        verbose_name = 'Order_history'
+        verbose_name_plural = 'Order histories'
