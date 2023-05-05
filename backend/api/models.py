@@ -17,7 +17,7 @@ class UserProfile(models.Model):
     email = models.CharField(max_length=50, blank=True)
     phone_number = models.CharField(max_length=11, blank=True)
 
-    def __sr__(self):
+    def __str__(self):
         return f'{self.user.name} {self.phone_number}'
 
 class Category(models.Model):
@@ -62,7 +62,7 @@ class AddressBook(models.Model):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
 
     class Meta:
-        verbose_name = 'User_address'
+        verbose_name = 'User address'
         verbose_name_plural = 'User addresses'
 
     
@@ -71,7 +71,7 @@ class OrderBook(models.Model):
     quantity = models.IntegerField(default=1)
 
     class Meta:
-        verbose_name = 'Order_book'
+        verbose_name = 'Order book'
         verbose_name_plural = 'Order books'
 
 class Order(models.Model):
@@ -89,5 +89,5 @@ class OrderHistory(models.Model):
     status = models.CharField(max_length=10, choices=ORDER_STATUS_CHOICES)
 
     class Meta:
-        verbose_name = 'Order_history'
+        verbose_name = 'Order history'
         verbose_name_plural = 'Order histories'

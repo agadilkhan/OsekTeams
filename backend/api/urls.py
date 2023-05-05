@@ -7,8 +7,9 @@ urlpatterns = [
     path('login/', obtain_jwt_token),
     path('registration/', views.register_user),
 
-    path('shop/books/', views.BookListAPIView.as_view()),
-    # path('shop/books/', views.book_list),
+    # path('shop/books/', views.BookListAPIView.as_view()),
+    path('shop/category/<int:pk>/books/', views.category_books),
+    path('shop/books/', views.book_list),
     path('shop/books/<int:pk>/', views.BookDetailAPIView.as_view()),
     path('shop/categories/', views.CategoryListAPIView.as_view()),
     path('shop/add_to_cart/<int:pk>/', views.add_to_cart),
@@ -22,5 +23,5 @@ urlpatterns = [
     path('address_book/', views.AddressBookAPIView.as_view()),
     path('address_book/<int:pk>/', views.AddressDetailAPIView.as_view()),
 
-    path('profile/', views.user_profile_details),
+    # path('profile/<int:pk>/', views.UserProfileDetailAPIView.as_view()),
 ]

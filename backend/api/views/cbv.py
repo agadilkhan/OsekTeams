@@ -128,3 +128,6 @@ class AddressDetailAPIView(APIView):
     #     addresses = user.addressbook.addresses.all()
     #     serializer = AddressSerializer(addresses, many=True)
     #     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+    

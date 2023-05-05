@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.permissions import *
+import json
 
 from api.serializers import *
 from api.models import *
@@ -30,6 +31,16 @@ def book_list(request):
             serializer.save()
             return Response(serializer, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def category_books(request, pk):
+    try:
+        category = Category.objects.get(id=pk)
+    except Category.DoesNotExist as e:
+        return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    books = category.books.all()
+    serializer = BookSerializer(books, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
     
 # @api_view(['GET', 'PUT', 'DELETE'])
 # def book_detail(request, pk):
@@ -106,25 +117,3 @@ def update_quantity(request, pk):
     order_book.quantity = quantity
     order_book.save()
     return Response({'updated':True}, status=status.HTTP_200_OK)
-
-@api_view(['GET', 'PUT'])
-def user_profile_details(request):
-    permission_classes = (IsAuthenticated, )
-    user = request.user
-    profile, created = UserProfile.objects.get_or_create(
-            user=user,
-            first_name=user.first_name,
-            last_name=user.last_name,
-            email=user.email,
-    )
-
-    if request.method == 'GET':
-       serializer = UserProfileSerializer(profile)
-       return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    elif request.method == 'PUT':
-        serializer = UserProfileSerializer(instance=profile, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
