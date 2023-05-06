@@ -1,0 +1,12 @@
+<div *ngIf="product">
+    <fieldset class="product-details">
+        <h3>{{ product.name }}</h3>
+        <h4>{{ product.price | currency }}</h4>
+        <p>{{ product.description }}</p>
+        <button class="cart" (click)="addToCart()">ADD TO CART</button>
+        <button class="like" (click)="likedProducts()">LIKE</button>
+    </fieldset>
+    <div class="book-img">
+        <img src="{{ product.img }}" class=".img" width="430">
+    </div>
+</div>

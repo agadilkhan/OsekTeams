@@ -1,0 +1,46 @@
+fieldset{
+    display: inline-flex;
+    width: 100%;
+    border: none;
+    margin-left: 20px;
+}
+h2{
+    font-family: 'Baskerville';
+    margin-left: -1045px;
+    color: #e4573d;
+    /* padding: 50px; */
+    font-size: 35px;
+    font-weight: lighter;
+}
+hr{
+    padding: 1px;
+    border: none;
+    margin-top: -15px;
+    background-color: #e4573d;
+}
+h1{
+    margin-left: -975px;
+    /* padding: 50px; */
+    font-size: 45px;
+    font-weight: lighter;
+}
+/* .product{
+    text-align: center;
+    align-items: center;
+} */
+.product .book-img{
+    margin-left: 50px;
+}
+.product .book-price{
+    color: rgb(149, 149, 113);
+    text-align: center;
+    align-items: center;
+}
+.book-name{
+    margin-left: 35px;
+    font-weight: 400;
+}
+.book-author{
+    margin-left: 35px;
+    color: rgb(110, 110, 83);
+}

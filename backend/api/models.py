@@ -18,7 +18,7 @@ class UserProfile(models.Model):
     phone_number = models.CharField(max_length=11, blank=True)
 
     def __str__(self):
-        return f'{self.user.name} {self.phone_number}'
+        return f'{self.user} {self.phone_number}'
 
 class Category(models.Model):
     name = models.CharField(max_length=50)

@@ -1,0 +1,22 @@
+* {
+  font-family: "Gill Sans", sans-serif;
+  text-decoration: none;
+  box-sizing: border-box;
+  color: rgb(31, 66, 37);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+body {
+  background-color: #f3f3f3;
+  position: relative;
+  margin: 0;
+}
+/* app-top-bar {
+  width: 100%;
+  padding: 20px 50px;
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  z-index: 1;
+} */
+

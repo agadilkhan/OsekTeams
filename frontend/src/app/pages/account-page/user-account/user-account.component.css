@@ -1,0 +1,61 @@
+.account{
+    width: 100%;
+}
+.account-dashboard{
+    position: relative;
+    align-items: center;
+    text-align: center;
+    /* top: px; */
+    /* padding: 30px; */
+    font-size: 65px;
+    font-weight: lighter;
+}
+.account-dashboard hr{
+    margin-bottom: -50px;
+}
+.account hr{
+    margin-top: -20px;
+}
+.account-dashboard a{
+    font-size: 35px;
+    font-weight: 400;
+}
+.dashboard-tile {
+    position: relative;
+    text-decoration: none;
+    text-align: center;
+    padding: 14px;
+    display: inline-flex;
+    width: 100%;
+    /* flex-direction: column; */
+    justify-content: center;
+    align-items: center;
+    /* height: 90px; */
+    background: rgb(45, 95, 54);
+    border-radius: 10px;
+    /* margin-bottom: 20px; */
+    color: #fff;
+    font-size: 20px;
+    font-weight: 400;
+}
+.dashboard-tile:hover{
+    background: rgb(62, 128, 74);
+}
+.dashboard-tile-wrap{
+    /* text-align: center; */
+    width: 50%;
+    margin: 5px auto;
+    /* display: flex;
+    flex-direction: column; */
+}
+.dashboard-tile-wrap fieldset{
+    /* text-align: center; */
+    margin-top: 15px;
+    border-color: rgb(45, 95, 54);
+    border-radius: 10px;
+}
+.dashboard-tile-wrap fieldset h2{
+    font-family: 'Lato,sans-serif';
+    font-weight: 600;
+    font-size: 28px;
+}

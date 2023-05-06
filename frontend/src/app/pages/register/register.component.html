@@ -1,0 +1,26 @@
+<ng-container>
+    <div class="top_link">
+        <h1>My account <a routerLink="/"> / Return home</a> </h1>
+      </div>
+      <hr>
+      <h2 class="txt">Register</h2>
+  <div>
+    <fieldset class="info">
+        <input type="text" [(ngModel)]="name" placeholder="FIRST NAME" required>
+    </fieldset>
+    <fieldset class="info">
+        <input type="text" [(ngModel)]="surname" placeholder="LAST NAME" required>
+    </fieldset>
+    <fieldset class="info">
+        <input type="text" [(ngModel)]="email" placeholder="EMAIL" required>
+    </fieldset>
+    <fieldset class="info">
+      <input type="text" [(ngModel)]="username" placeholder="USERNAME" required>
+    </fieldset>
+    <fieldset class="info">
+      <input type="password" [(ngModel)]="password" placeholder="PASSWORD" required>
+    </fieldset>
+    <button (click)="createNewUser()">SIGN UP!</button>
+    <a class="sign-in" routerLink='/login'>Already have an account? Sign in</a>
+  </div>
+</ng-container>

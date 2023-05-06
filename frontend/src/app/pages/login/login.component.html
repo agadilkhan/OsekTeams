@@ -1,0 +1,18 @@
+  <div class="top_link">
+    <h1>My account <a routerLink="/"> / Return home</a> </h1>
+  </div>
+  <hr>
+  <h2 class="txt">Login</h2>
+  <div>
+    <fieldset class="username">
+      <input type="text" [(ngModel)]="username" placeholder="USERNAME" required>
+    </fieldset>
+    <fieldset class="username">
+      <input type="password" [(ngModel)]="password" placeholder="PASSWORD" required>
+    </fieldset>
+    <button (click)="login()">LOG IN</button>
+    <a class="sign-up" routerLink='/register'>Don't have an account? Sign up</a>
+  </div>
+  <!-- <img class="first-img" src="https://cdn.dribbble.com/userupload/4383194/file/original-e5cc557ec9a77371faf6e0a66c4612f9.jpg?compress=1&resize=2048x1536&vertical=center">
+  <img class="second-img" src="https://cdn.dribbble.com/userupload/4383196/file/original-f96332dc194b0a3ddec31a7576788702.jpg?compress=1&resize=2048x1536&vertical=center"> -->
+

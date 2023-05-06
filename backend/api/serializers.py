@@ -67,9 +67,16 @@ class AddressSerializer(serializers.Serializer):
 
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.Serializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    email = serializers.CharField()
+    phone_number = serializers.CharField()
 
-    class Meta:
-        model = UserProfile
-        fields = ('id', 'first_name', 'last_name', 'email', 'phone_number')
-        partial = True
+    def update(self, instance, validated_data):
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.save() 
+        return instance

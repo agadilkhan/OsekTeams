@@ -1,0 +1,23 @@
+<h2>People's choice</h2>
+<hr>
+<h1>Bestseller Books</h1>
+<fieldset>
+    <div *ngFor="let book of books" class="product">
+        <div class="book-img">
+            <!-- {{book.image_url}} -->
+            <img src="{{ book.image_url }}" class=".img" width="280" />
+        </div>
+        <p class="book-price" *ngIf="book.price"> £ {{book.price}} </p>
+        <h3 class="book-name">
+            <a [routerLink]= "['/products', book.id]" >
+                {{ book.name }}
+            </a>
+        </h3>
+        <p class="book-author" *ngIf="book.author"> By {{book.author}}</p>
+
+    <!-- <p *ngIf="product.description">Description: {{ product.description }}</p> -->
+
+    <!-- <app-product-alerts [product]="product" (notify)="onNotify()"> -->
+    <!-- </app-product-alerts> -->
+    </div>
+</fieldset>

@@ -1,0 +1,22 @@
+<!-- <a routerLink="/login" class="login"> -->
+<div class="top-bar">
+<ng-container *ngIf="logged; else loggedOut" class="logged">
+  <a class="acc" routerLink="/account"> ACCOUNT | </a>
+  <button class="log-out" routerLink='/login' (click)="logout()">LOG OUT</button>
+</ng-container>
+
+ <ng-template #loggedOut>
+    <div class="right-side">
+        <a routerLink="/login" class="button"><span class="icon">⍜</span> SIGN IN |</a>
+        <a routerLink="/register" class="button">REGISTER </a>
+        <div class="vertical-line"></div>
+        <a routerLink="/" class="text">Readit</a>
+      </div> 
+ </ng-template>
+</div>
+<div class="store-name">
+  <a class="main-txt" routerLink='/'>Readit</a>
+</div>
+<div class="category-bar">
+  <app-book-categories></app-book-categories>
+</div>

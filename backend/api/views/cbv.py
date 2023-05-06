@@ -15,57 +15,6 @@ class CategoryListAPIView(mixins.ListModelMixin,
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
-    # def post(self, request, *args, **kwargs):
-    #     return self.create(request, *args, **kwargs)
-
-
-# class CategoryDetailAPIView(mixins.RetrieveModelMixin,
-#                             mixins.UpdateModelMixin,
-#                             mixins.DestroyModelMixin,
-#                             generics.GenericAPIView):
-#     queryset = Category.objects.all()
-#     serializer_class = CategorySerializer
-#     lookup_url_kwarg = 'pk'
-
-#     def get(self, request, *args, **kwargs):
-#         return self.retrieve(request, *args, **kwargs)
-
-#     def put(self, request, *args, **kwargs):
-#         return self.update(request, *args, **kwargs)
-
-#     def delete(self, request, *args, **kwargs):
-#         return self.destroy(request, *args, **kwargs)
-    
-class BookListAPIView(mixins.ListModelMixin,
-                          mixins.CreateModelMixin,
-                          generics.GenericAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
-    
-    # def post(self, request, *args, **kwargs):
-    #     return self.create(request, *args, **kwargs)
-    
-
-class BookDetailAPIView(mixins.RetrieveModelMixin,
-                            mixins.UpdateModelMixin,
-                            mixins.DestroyModelMixin,
-                            generics.GenericAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
-    lookup_url_kwarg = 'pk'
-
-    def get(self, request, *args, **kwargs):
-        return self.retrieve(request, *args, **kwargs)
-    
-    # def put(self, request, *args, **kwargs):
-    #     return self.put(request, *args, **kwargs)
-    
-    # def delete(self, request, *args, **kwargs):
-    #     return self.destroy(request, *args, **kwargs)
-
 class OrderListAPIView(APIView):
     def get(self, request):
         permission_classes = (IsAuthenticated, )
@@ -84,19 +33,25 @@ class OrderDetailAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class AddressBookAPIView(APIView):
-    def get(self, request):
-        permission_classes = (IsAuthenticated, )
+    def get_object(self, request):
         user = request.user
         try:
             address_book = user.addressbook
-            serializer = AddressBookSerializer(address_book)
-            return Response(serializer.data, status=status.HTTP_200_OK)
         except AddressBook.DoesNotExist as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            address_book = AddressBook.objects.create(
+                user=user
+            )
+        return address_book
+    
+    def get(self, request):
+        permission_classes = (IsAuthenticated, )
+        address_book = self.get_object(request)
+        serializer = AddressBookSerializer(address_book)
+        return Response(serializer.data, status=status.HTTP_200_OK)
         
     def post(self, request):
         permission_classes = (IsAuthenticated, )
-        user = request.user
+        address_book = self.get_object(request)
         city = request.data['city']
         street = request.data['street']
         postcode = request.data['postcode']
@@ -105,9 +60,9 @@ class AddressBookAPIView(APIView):
             street = street,
             postcode = postcode
         )
-        addresses = user.addressbook.addresses
+        addresses = address_book.addresses
         addresses.add(address)
-        serializer = AddressBookSerializer(user.addressbook)
+        serializer = AddressBookSerializer(address_book)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class AddressDetailAPIView(APIView):
@@ -116,18 +71,3 @@ class AddressDetailAPIView(APIView):
         address = Address.objects.get(id=pk)
         serializer = AddressSerializer(address)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    # def put(self, request, pk):
-    #     permission_classes = (IsAuthenticated, )
-    #     user = request.user
-    #     new_address = Address.objects.get_or_create(
-    #         city = request.data['city'],
-    #         street = request.data['street'],
-    #         postcode = request.data['postcode']
-    #     )
-    #     addresses = user.addressbook.addresses.all()
-    #     serializer = AddressSerializer(addresses, many=True)
-    #     return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-    

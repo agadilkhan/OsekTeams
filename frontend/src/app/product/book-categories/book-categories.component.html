@@ -1,0 +1,41 @@
+<div class="fixed">
+    <hr>
+    <ul>
+        <li *ngFor="let category of categories" class="category">
+            <a class="one-category">
+                {{category.name}} |
+            </a>
+
+        </li>
+    </ul>
+    <div class="search-bar">
+            <input class="search" type="search" placeholder="Title, author">
+            <button class="btn-search" type="submit">S</button>
+    </div>
+    <hr>
+</div>
+
+
+
+
+
+
+
+
+<!-- <fieldset>
+    <label>Category name: </label>
+    <input type="text" [(ngModel)]="newCategory">
+    <button (click)="createNewCategory()">Add category</button>
+  </fieldset> -->
+
+<!-- <div *ngFor="let category of categories" class="category">
+        <p class="one-category">
+            <a
+                [title]="category.name"
+                [routerLink]="['/category', category.name]"
+            >
+                {{ category.name }}
+            </a>
+        </p>
+        <app-categories-of-category></app-categories-of-category>
+</div> -->
