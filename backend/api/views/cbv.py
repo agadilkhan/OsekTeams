@@ -60,8 +60,7 @@ class AddressBookAPIView(APIView):
             street = street,
             postcode = postcode
         )
-        addresses = address_book.addresses
-        addresses.add(address)
+        address_book.addresses.add(address)
         serializer = AddressBookSerializer(address_book)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
