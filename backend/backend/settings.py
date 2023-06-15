@@ -150,7 +150,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
  
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'api', 'media')
 MEDIA_URL = 'media/'
 
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'

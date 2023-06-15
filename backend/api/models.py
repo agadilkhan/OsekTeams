@@ -43,7 +43,7 @@ class Book(models.Model):
         verbose_name_plural = 'Books'
 
     def __str__(self):
-        return self.name
+        return f'{self.name} {self.author} {self.description} {self.description} {self.price}'
 
 class Address(models.Model):
     city = models.CharField(max_length=50)
@@ -64,6 +64,9 @@ class AddressBook(models.Model):
     class Meta:
         verbose_name = 'User address'
         verbose_name_plural = 'User addresses'
+    
+    def __str__(self):
+        return f'{self.addresses} {self.user}'
 
     
 class OrderBook(models.Model):
@@ -73,6 +76,9 @@ class OrderBook(models.Model):
     class Meta:
         verbose_name = 'Order book'
         verbose_name_plural = 'Order books'
+    
+    def __str__(self):
+        return f'{self.book} {self.quantity}'
 
 class Order(models.Model):
     books = models.ManyToManyField(OrderBook)
@@ -83,6 +89,9 @@ class Order(models.Model):
     class Meta:
         verbose_name = 'Order'
         verbose_name_plural = 'Orders'
+    
+    def __str__(self):
+        return f'{self.books} {self.user} {self.ordered} {self.destination_address}'
 
 class OrderHistory(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='histories')
@@ -91,3 +100,6 @@ class OrderHistory(models.Model):
     class Meta:
         verbose_name = 'Order history'
         verbose_name_plural = 'Order histories'
+    
+    def __str__(self):
+        return f'{self.order} {self.status}'

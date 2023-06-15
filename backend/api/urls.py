@@ -7,11 +7,11 @@ urlpatterns = [
     path('login/', obtain_jwt_token),
     path('registration/', views.register_user),
 
-    path('shop/category/<int:pk>/books/', views.category_books),
-    path('shop/books/', views.book_list),
-    path('shop/books/<int:pk>/', views.book_detail),
-    path('shop/categories/', views.CategoryListAPIView.as_view()),
-    path('shop/add_to_cart/<int:pk>/', views.add_to_cart),
+    path('category/<int:pk>/books/', views.category_books),
+    path('books/', views.book_list),
+    path('books/<int:pk>/', views.book_detail),
+    path('categories/', views.CategoryListAPIView.as_view()),
+    path('add_to_cart/<int:pk>/', views.add_to_cart),
 
     path('cart/books/', views.cart_book_list),
     path('cart/remove/<int:pk>/', views.remove_from_cart),
