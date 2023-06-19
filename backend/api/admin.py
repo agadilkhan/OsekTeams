@@ -19,14 +19,14 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'ordered')
     filter_horizontal = ['books']
 
-@admin.register(Address)
-class AddressAdmin(admin.ModelAdmin):
-    list_display = ('id', 'city', 'street', 'postcode')
+# @admin.register(DestinationAddress)
+# class AddressAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'postcode')
 
-@admin.register(AddressBook)
-class AddresBookAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user')
-    filter_horizontal = ['addresses']
+# @admin.register(AddressBook)
+# class AddresBookAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'user')
+#     filter_horizontal = ['addresses']
 
 @admin.register(OrderHistory)
 class OrderHistoryAdmin(admin.ModelAdmin):
@@ -34,4 +34,4 @@ class OrderHistoryAdmin(admin.ModelAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'first_name', 'last_name', 'email', 'phone_number')
+    list_display = ('id', 'phone_number')

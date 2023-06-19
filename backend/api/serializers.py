@@ -8,11 +8,18 @@ class UserSerializer(serializers.Serializer):
     last_name = serializers.CharField()
     email = serializers.CharField()
     username = serializers.CharField()
-    password = serializers.CharField()
+    password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+    
+    def to_representation(self, instance):
+        # Exclude the password field from the returned data
+        
+        representation = super().to_representation(instance)
+        representation.pop('password', None)
+        return representation
 
 class CategorySerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
@@ -52,18 +59,16 @@ class OrderBookSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
-        fields = ('id', 'destination_address')
+        fields = ('id')
 
-class AddressBookSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AddressBook
-        fields = ('id', 'user', 'addresses')
+# class AddressBookSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = AddressBook
+#         fields = ('id', 'user', 'addresses')
 
-class AddressSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    city = serializers.CharField()
-    street = serializers.CharField()
-    postcode = serializers.CharField()
+# class DestinationAddressSerializer(serializers.Serializer):
+#     id = serializers.IntegerField(read_only=True)
+#     postcode = serializers.CharField()
 
 
 

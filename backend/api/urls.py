@@ -22,5 +22,5 @@ urlpatterns = [
     path('address_book/', views.AddressBookAPIView.as_view()),
     path('address_book/<int:pk>/', views.AddressDetailAPIView.as_view()),
 
-    path('profile/', views.user_profile_detail),
+    # path('profile/', views.user_profile_detail),
 ]

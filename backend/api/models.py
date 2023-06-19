@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 
 ORDER_STATUS_CHOICES = [
     ('OR', 'Ordered'),
@@ -12,10 +13,11 @@ ORDER_STATUS_CHOICES = [
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    first_name = models.CharField(max_length=50, blank=True)
-    last_name = models.CharField(max_length=50, blank=True)
-    email = models.CharField(max_length=50, blank=True)
     phone_number = models.CharField(max_length=11, blank=True)
+
+    class Meta:
+        verbose_name = 'User profile'
+        verbose_name_plural = 'User profiles'
 
     def __str__(self):
         return f'{self.user} {self.phone_number}'
@@ -43,30 +45,28 @@ class Book(models.Model):
         verbose_name_plural = 'Books'
 
     def __str__(self):
-        return f'{self.name} {self.author} {self.description} {self.description} {self.price}'
+        return f'category: {self.category}, name: {self.name}' 
 
-class Address(models.Model):
-    city = models.CharField(max_length=50)
-    street = models.CharField(max_length=50)
-    postcode = models.CharField(max_length=50)
+# class DestinationAddress(models.Model):
+#     postcode = models.CharField(max_length=50)
 
-    class Meta:
-        verbose_name = 'Address'
-        verbose_name_plural = 'Addresses'
+#     class Meta:
+#         verbose_name = 'Destination address'
+#         verbose_name_plural = 'Destination addresses'
     
-    def __str__(self):
-        return f'{self.city} {self.street} {self.postcode}'
+#     def __str__(self):
+#         return f'{self.postcode}'
     
-class AddressBook(models.Model):
-    addresses = models.ManyToManyField(Address)
-    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
+# class AddressBook(models.Model):
+#     addresses = models.ManyToManyField(DestinationAddress)
+#     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True)
 
-    class Meta:
-        verbose_name = 'User address'
-        verbose_name_plural = 'User addresses'
+#     class Meta:
+#         verbose_name = 'User address'
+#         verbose_name_plural = 'User addresses'
     
-    def __str__(self):
-        return f'{self.addresses} {self.user}'
+#     def __str__(self):
+#         return f'{self.addresses} {self.user}'
 
     
 class OrderBook(models.Model):
@@ -78,20 +78,25 @@ class OrderBook(models.Model):
         verbose_name_plural = 'Order books'
     
     def __str__(self):
-        return f'{self.book} {self.quantity}'
+        return f'{self.book}, quantity: {self.quantity}'
 
 class Order(models.Model):
     books = models.ManyToManyField(OrderBook)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     ordered = models.BooleanField(default=False)
-    destination_address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
+    # destination_address = models.ForeignKey(DestinationAddress, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
 
     class Meta:
         verbose_name = 'Order'
         verbose_name_plural = 'Orders'
     
+    def clean(self):
+        # destination_address field is required if ordered=True
+        if self.ordered and not self.destination_address:
+            raise ValidationError("Destination address is required when ordered is True.")
+
     def __str__(self):
-        return f'{self.books} {self.user} {self.ordered} {self.destination_address}'
+        return f'{self.books} {self.user} {self.ordered}'
 
 class OrderHistory(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='histories')

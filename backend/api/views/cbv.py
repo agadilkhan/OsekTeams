@@ -1,6 +1,6 @@
 from rest_framework import generics, mixins, status
-from rest_framework.permissions import *
 from rest_framework.views import APIView, Response
+from rest_framework.permissions import IsAuthenticated
 
 from api.models import *
 from api.serializers import *
@@ -16,23 +16,30 @@ class CategoryListAPIView(mixins.ListModelMixin,
         return self.list(request, *args, **kwargs)
 
 class OrderListAPIView(APIView):
+    permission_classes = (IsAuthenticated, )
+
     def get(self, request):
-        permission_classes = (IsAuthenticated, )
         user = request.user
         orders = user.orders.filter(ordered=True)
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class OrderDetailAPIView(APIView):
+    permission_classes = (IsAuthenticated, )
+
     def get(self, request, pk):
-        permission_classes = (IsAuthenticated, )
         user = request.user
-        order = user.orders.get(id=pk)
-        books = order.books.all()
-        serializer = OrderBookSerializer(books, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            order = user.orders.get(id=pk)
+            books = order.books.all()
+            serializer = OrderBookSerializer(books, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class AddressBookAPIView(APIView):
+    permission_classes = (IsAuthenticated, )
+
     def get_object(self, request):
         user = request.user
         try:
@@ -44,13 +51,11 @@ class AddressBookAPIView(APIView):
         return address_book
     
     def get(self, request):
-        permission_classes = (IsAuthenticated, )
         address_book = self.get_object(request)
         serializer = AddressBookSerializer(address_book)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
     def post(self, request):
-        permission_classes = (IsAuthenticated, )
         address_book = self.get_object(request)
         city = request.data['city']
         street = request.data['street']
@@ -65,8 +70,9 @@ class AddressBookAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 class AddressDetailAPIView(APIView):
+    permsision_classes = (IsAuthenticated, )
+
     def get(self, request, pk):
-        permsision_classes = (IsAuthenticated, )
         address = Address.objects.get(id=pk)
         serializer = AddressSerializer(address)
         return Response(serializer.data, status=status.HTTP_200_OK)
