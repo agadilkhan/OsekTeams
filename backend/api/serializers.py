@@ -61,27 +61,27 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ('id')
 
-# class AddressBookSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = AddressBook
-#         fields = ('id', 'user', 'addresses')
+class AddressBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AddressBook
+        fields = ('id', 'user')
 
-# class DestinationAddressSerializer(serializers.Serializer):
-#     id = serializers.IntegerField(read_only=True)
-#     postcode = serializers.CharField()
-
-
+class AddressSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    city = serializers.CharField()
+    street = serializers.CharField()
+    postcode = serializers.CharField()
 
 class UserProfileSerializer(serializers.Serializer):
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     email = serializers.CharField()
-    phone_number = serializers.CharField()
+    phone_number = serializers.CharField(required=False, allow_blank=True)
 
     def update(self, instance, validated_data):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.email = validated_data.get('email', instance.email)
-        phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
         instance.save() 
         return instance

@@ -19,8 +19,12 @@ urlpatterns = [
 
     path('orders/', views.OrderListAPIView.as_view()),
     path('orders/<int:pk>/', views.OrderDetailAPIView.as_view()),
-    path('address_book/', views.AddressBookAPIView.as_view()),
-    path('address_book/<int:pk>/', views.AddressDetailAPIView.as_view()),
 
-    # path('profile/', views.user_profile_detail),
+    path('address_book/', views.AddressBookAPIView.as_view()),
+    
+    path('addresses/', views.AddressListAPIView.as_view()),
+    path('addresses/<int:pk>/', views.AddressDetailAPIView.as_view()),
+    path('add_address/', views.add_address),
+
+    path('profile/', views.UserProfileAPIView.as_view()),
 ]

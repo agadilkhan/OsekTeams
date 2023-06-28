@@ -37,42 +37,79 @@ class OrderDetailAPIView(APIView):
         except Exception as e:
             return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class AddressBookAPIView(APIView):
+class UserProfileAPIView(APIView):
     permission_classes = (IsAuthenticated, )
 
-    def get_object(self, request):
+    def get(self, request):
         user = request.user
-        try:
-            address_book = user.addressbook
-        except AddressBook.DoesNotExist as e:
-            address_book = AddressBook.objects.create(
-                user=user
-            )
-        return address_book
+        user_profile = user.userprofile
+        serializer = UserProfileSerializer(user_profile)
+        return Response(serializer.data, status=status.HTTP_200_OK) 
+    
+    def put(self, request):
+        user = request.user
+        user_profile = user.userprofile
+        serializer = UserProfileSerializer(instance=user_profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class AddressBookAPIView(APIView):
+    permission_classes = (IsAuthenticated, )
     
     def get(self, request):
-        address_book = self.get_object(request)
-        serializer = AddressBookSerializer(address_book)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-        
-    def post(self, request):
-        address_book = self.get_object(request)
-        city = request.data['city']
-        street = request.data['street']
-        postcode = request.data['postcode']
-        address, created = Address.objects.get_or_create(
-            city = city,
-            street = street,
-            postcode = postcode
-        )
-        address_book.addresses.add(address)
+        user = request.user
+        address_book = user.addressbook
         serializer = AddressBookSerializer(address_book)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-class AddressDetailAPIView(APIView):
-    permsision_classes = (IsAuthenticated, )
+class AddressListAPIView(APIView):
+    permission_classes = (IsAuthenticated, )
 
-    def get(self, request, pk):
-        address = Address.objects.get(id=pk)
+    def get(self, request):
+        user = request.user
+        addresses = user.addressbook.addresses.all()
+        serializer = AddressSerializer(addresses, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        user = request.user
+        city, street, postcode = request.data['city'], request.data['street'], request.data['postcode']
+        address, created = Address.objects.get_or_create(city=city, street=street, postcode=postcode)
+        addresses = user.addressbook.addresses
+        addresses.add(address)
         serializer = AddressSerializer(address)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class AddressDetailAPIView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get_object(self, request, pk):
+        user = request.user
+        addresses = user.addressbook.addresses.all()
+        try: 
+            return addresses.get(id=pk)
+        except Address.DoesNotExist as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def get(self, request, pk):
+        address = self.get_object(request, pk)
+        serializer = AddressSerializer(address)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def put(self, request, pk):
+        address = self.get_object(request, pk)
+        addresses = list(request.user.addressbook.addresses.all())
+        index = addresses.index(address)
+        updated_address, created = Address.objects.get_or_create(city=request.data['city'], 
+                                                  street=request.data['street'], postcode=request.data['postcode'])
+        addresses[index] = updated_address
+        request.user.addressbook.addresses.set(addresses)
+        serializer = AddressSerializer(updated_address)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def delete(self, request, pk):
+        address = self.get_object(request, pk)
+        request.user.addressbook.addresses.remove(address)
+        return Response({'deleted':True}, status=status.HTTP_200_OK)     
