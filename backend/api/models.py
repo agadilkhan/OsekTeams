@@ -43,6 +43,18 @@ def update_user(sender, instance, created, **kwargs):
     instance.user.email = instance.email
     instance.user.save()
 
+class Author(models.Model):
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    bio = models.CharField(max_length=300)
+
+    class Meta:
+        verbose_name = 'Author'
+        verbose_name_plural = 'Authors'
+    
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
 class Category(models.Model):
     name = models.CharField(max_length=50)
 
@@ -56,7 +68,7 @@ class Category(models.Model):
 class Book(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='books')
     name = models.CharField(max_length=50)
-    author = models.CharField(max_length=50)
+    authors = models.ManyToManyField(Author)
     description = models.TextField()
     price = models.FloatField()
     image = models.ImageField(upload_to='books')
@@ -67,6 +79,7 @@ class Book(models.Model):
 
     def __str__(self):
         return f'{self.category} {self.name}' 
+    
 
 class Address(models.Model):
     city = models.CharField(max_length=50)
@@ -97,8 +110,7 @@ def addressbook_receiver(sender, instance, created, *args, **kwargs):
         addressbook = AddressBook.objects.create(user=instance)
 
 post_save.connect(addressbook_receiver, User)
-
-    
+  
 class OrderBook(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)

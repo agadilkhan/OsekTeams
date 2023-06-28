@@ -1,6 +1,10 @@
 from django.contrib import admin
 from api.models import *
 
+@admin.register(Author)
+class AuthorAdmin(admin.ModelAdmin):
+    list_display = ('id', 'first_name', 'last_name')
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'name')

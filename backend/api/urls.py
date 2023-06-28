@@ -24,7 +24,6 @@ urlpatterns = [
     
     path('addresses/', views.AddressListAPIView.as_view()),
     path('addresses/<int:pk>/', views.AddressDetailAPIView.as_view()),
-    path('add_address/', views.add_address),
 
     path('profile/', views.UserProfileAPIView.as_view()),
 ]
