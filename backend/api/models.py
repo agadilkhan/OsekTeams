@@ -15,6 +15,7 @@ ORDER_STATUS_CHOICES = [
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
     first_name = models.CharField(max_length=50, blank=True, null=True)
     last_name = models.CharField(max_length=50, blank=True, null=True)
     email = models.CharField(max_length=50, blank=True, null=True)
@@ -46,7 +47,7 @@ def update_user(sender, instance, created, **kwargs):
 class Author(models.Model):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    bio = models.CharField(max_length=300)
+    bio = models.TextField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'Author'
@@ -67,8 +68,9 @@ class Category(models.Model):
 
 class Book(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='books')
-    name = models.CharField(max_length=50)
     authors = models.ManyToManyField(Author)
+
+    name = models.CharField(max_length=50)
     description = models.TextField()
     price = models.FloatField()
     image = models.ImageField(upload_to='books')
@@ -80,7 +82,6 @@ class Book(models.Model):
     def __str__(self):
         return f'{self.category} {self.name}' 
     
-
 class Address(models.Model):
     city = models.CharField(max_length=50)
     street = models.CharField(max_length=50)
@@ -113,6 +114,7 @@ post_save.connect(addressbook_receiver, User)
   
 class OrderBook(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
+
     quantity = models.IntegerField(default=1)
 
     class Meta:
@@ -128,8 +130,9 @@ class OrderBook(models.Model):
 class Order(models.Model):
     books = models.ManyToManyField(OrderBook)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
-    ordered = models.BooleanField(default=False)
     destination_address = models.ForeignKey(Address, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
+
+    ordered = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Order'
@@ -152,6 +155,7 @@ class Order(models.Model):
 
 class OrderHistory(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='histories')
+
     ordered_date = models.DateTimeField(null=True, blank=True)
     delivered_date = models.DateTimeField(null=True, blank=True)
     canceled_date = models.DateTimeField(null=True, blank=True)
@@ -172,3 +176,23 @@ def set_order_dates(sender, instance, **kwargs):
         instance.canceled_date = timezone.now()
     elif (instance.order_status == 'Delivered' or instance.order_status == 'DE')and not instance.delivered_date:
         instance.delivered_date = timezone.now()
+
+class Review(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+
+    class Meta:
+        verbose_name = 'Review'
+        verbose_name_plural = 'Reviews'
+
+    def __str__(self):
+        return f'{self.title}'
+    
+class BookReview(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='reviews', null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='reviews', null=True)
+    review = models.OneToOneField(Review, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        verbose_name = 'Book review'
+        verbose_name_plural = 'Book reviews'

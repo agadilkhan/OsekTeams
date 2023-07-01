@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from api.serializers import *
 from api.models import *
@@ -16,7 +16,6 @@ def register_user(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['GET'])
 def book_list(request):
@@ -111,4 +110,37 @@ def update_quantity(request, pk):
         order_book.save()
         return Response({'updated':True}, status=status.HTTP_200_OK)
     except OrderBook.DoesNotExist as e:
+        return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+def author_books(request, pk):
+    try:
+        author = Author.objects.get(id=pk)
+        books = author.book_set.all()
+        serializer = BookSerializer(books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Author.DoesNotExist as e:
+        return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['GET'])
+def book_reviews(request, pk):
+    try:
+        book = Book.objects.get(id=pk)
+        reviews = BookReview.objects.filter(book=book)
+        serializer = BookReviewSerializer(reviews, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Book.DoesNotExist as e:
+        return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_review(request, pk):
+    try:
+        user = request.user
+        book = Book.objects.get(id=pk)
+        review = Review.objects.create(title=request.data['title'], content=request.data['content'])
+        book_review = BookReview.objects.create(book=book, user=user, review=review)
+        serializer = BookReviewSerializer(book_review)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Book.DoesNotExist as e:
         return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)

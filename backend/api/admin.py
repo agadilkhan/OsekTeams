@@ -38,3 +38,11 @@ class OrderHistoryAdmin(admin.ModelAdmin):
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('id', 'first_name', 'last_name', 'email', 'phone_number')
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title')
+
+@admin.register(BookReview)
+class BookReviewAdmin(admin.ModelAdmin):
+    list_display = ('id', 'book', 'user', 'review')

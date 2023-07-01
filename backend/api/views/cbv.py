@@ -14,6 +14,15 @@ class CategoryListAPIView(mixins.ListModelMixin,
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
+    
+class AuthorDetailAPIView(mixins.RetrieveModelMixin,
+                          generics.GenericAPIView):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    lookup_url_kwarg = 'pk'
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 class OrderListAPIView(APIView):
     permission_classes = (IsAuthenticated, )
@@ -112,4 +121,4 @@ class AddressDetailAPIView(APIView):
     def delete(self, request, pk):
         address = self.get_object(request, pk)
         request.user.addressbook.addresses.remove(address)
-        return Response({'deleted':True}, status=status.HTTP_200_OK)     
+        return Response({'deleted':True}, status=status.HTTP_200_OK)  

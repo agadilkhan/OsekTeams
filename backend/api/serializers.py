@@ -25,29 +25,15 @@ class CategorySerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField()
 
-    def create(self, validated_data):
-        category = Category.objects.create(**validated_data)
-        return category
-
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.save()
-        return instance
-
 class BookSerializer(serializers.ModelSerializer):
-    image_url = serializers.SerializerMethodField()
-
-    def get_image_url(self, obj):
-        request = self.context.get('request')
-        image_url = obj.image.url
-        if request is not None:
-            image_url = request.build_absolute_uri(image_url)
-        image_url = f'http://localhost:8000{image_url}'
-        return image_url
-
     class Meta:
         model = Book
         fields = '__all__'
+
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Author
+        fields = ('id', 'first_name', 'last_name', 'bio')
 
 class OrderBookSerializer(serializers.ModelSerializer):
     book = BookSerializer()
@@ -85,3 +71,13 @@ class UserProfileSerializer(serializers.Serializer):
         instance.phone_number = validated_data.get('phone_number', instance.phone_number)
         instance.save() 
         return instance
+    
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+class BookReviewSerializer(serializers.Serializer):
+    user = UserSerializer()
+    book = BookSerializer()
+    review = ReviewSerializer()
