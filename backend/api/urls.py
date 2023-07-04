@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('books/<int:pk>/reviews/', views.book_reviews),
     path('books/<int:pk>/reviews/create/', views.create_review),
+    path('books/<int:book_id>/reviews/<int:book_review_id>/', views.BookReviewDetailAPIView.as_view()),
     
     path('addresses/', views.AddressListAPIView.as_view()),
     path('addresses/<int:pk>/', views.AddressDetailAPIView.as_view()),

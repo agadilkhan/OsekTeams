@@ -1,6 +1,6 @@
 from rest_framework import generics, mixins, status
 from rest_framework.views import APIView, Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from api.models import *
 from api.serializers import *
@@ -122,3 +122,51 @@ class AddressDetailAPIView(APIView):
         address = self.get_object(request, pk)
         request.user.addressbook.addresses.remove(address)
         return Response({'deleted':True}, status=status.HTTP_200_OK)  
+
+class BookReviewDetailAPIView(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, book_id, book_review_id):
+        try:
+            book = Book.objects.get(id=book_id)
+            book_review = book.reviews.get(id=book_review_id)
+            serializer = BookReviewSerializer(book_review)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Book.DoesNotExist as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except BookReview.DoesNotExist as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, book_id, book_review_id):
+        try:
+            book = Book.objects.get(id=book_id)
+            book_review = book.reviews.get(id=book_review_id)
+            if request.user == book_review.user:
+                book_review.review.title = request.data['title']
+                book_review.review.content = request.data['content']
+                book_review.save()
+                serializer = BookReviewSerializer(book_review)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({'error':'This user cannot edit this review.'}, status=status.HTTP_400_BAD_REQUEST)
+        except Book.DoesNotExist as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except BookReview.DoesNotExist as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, book_id, book_review_id):
+        try:
+            book = Book.objects.get(id=book_id)
+            book_review = book.reviews.get(id=book_review_id)
+            if request.user == book_review.user:
+                book_review.delete()
+                return Response({'deleted':True}, status=status.HTTP_200_OK)
+            return Response({'error':'This user cannot delete this review.'}, status=status.HTTP_400_BAD_REQUEST)
+        except Book.DoesNotExist as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except BookReview.DoesNotExist as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [AllowAny()]
+        return super().get_permissions()

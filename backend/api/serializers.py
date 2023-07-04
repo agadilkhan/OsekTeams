@@ -79,5 +79,4 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class BookReviewSerializer(serializers.Serializer):
     user = UserSerializer()
-    book = BookSerializer()
     review = ReviewSerializer()
